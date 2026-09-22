@@ -1,9 +1,17 @@
 import { Link } from '@tanstack/react-router'
 import { MapPin, Mail, Phone, MessageCircle } from 'lucide-react'
-import { clinicName, contact, doctor } from '@/data/clinic'
+import { clinicName, doctor } from '@/data/clinic'
+import { useSiteContent } from '@/lib/site-content'
 
 export function SiteFooter() {
   const year = new Date().getFullYear()
+  const content = useSiteContent()
+  const socialEntries = [
+    { key: 'facebook', label: 'فيسبوك', url: content.social.facebook },
+    { key: 'instagram', label: 'إنستغرام', url: content.social.instagram },
+    { key: 'tiktok', label: 'تيك توك', url: content.social.tiktok },
+    { key: 'twitter', label: 'X (تويتر)', url: content.social.twitter },
+  ].filter((entry) => entry.url && entry.url.trim().length > 0)
 
   return (
     <footer id="contact" className="border-t border-slate-100 bg-slate-50">
@@ -55,19 +63,19 @@ export function SiteFooter() {
           <ul className="space-y-2.5 text-sm text-slate-600">
             <li className="flex items-center gap-2">
               <Phone size={16} className="shrink-0 text-teal-700" />
-              <span>{contact.phonePlaceholder}</span>
+              <span>{content.phone}</span>
             </li>
             <li className="flex items-center gap-2">
               <MessageCircle size={16} className="shrink-0 text-teal-700" />
-              <span>{contact.whatsappPlaceholder}</span>
+              <span>{content.whatsapp}</span>
             </li>
             <li className="flex items-center gap-2">
               <Mail size={16} className="shrink-0 text-teal-700" />
-              <span>{contact.emailPlaceholder}</span>
+              <span>{content.email}</span>
             </li>
             <li className="flex items-start gap-2">
               <MapPin size={16} className="mt-0.5 shrink-0 text-teal-700" />
-              <span>{contact.addressPlaceholder}</span>
+              <span>{content.address}</span>
             </li>
           </ul>
         </div>
@@ -78,6 +86,21 @@ export function SiteFooter() {
             يُرجى الوصول قبل الموعد بعشر دقائق، وإخبارنا مسبقًا في حال الرغبة بالتأجيل أو
             الإلغاء حتى يتسنى لنا استقبال مريضة أخرى.
           </p>
+          {socialEntries.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {socialEntries.map((entry) => (
+                <a
+                  key={entry.key}
+                  href={entry.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-teal-700 hover:text-teal-700"
+                >
+                  {entry.label}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

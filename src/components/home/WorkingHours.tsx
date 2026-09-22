@@ -1,7 +1,8 @@
 import { Clock3, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
-import { contact, workingHours } from '@/data/clinic'
+import { useSiteContent } from '@/lib/site-content'
 
 export function WorkingHours() {
+  const content = useSiteContent()
   return (
     <section id="hours" className="mx-auto max-w-7xl px-5 py-16">
       <div className="grid gap-6 lg:grid-cols-2">
@@ -14,7 +15,7 @@ export function WorkingHours() {
           </div>
 
           <ul className="mt-6 divide-y divide-slate-100">
-            {workingHours.map((row) => (
+            {content.workingHours.map((row) => (
               <li key={row.day} className="flex items-center justify-between py-3 text-sm">
                 <span className="font-semibold text-slate-700">{row.day}</span>
                 <span className="text-slate-500">{row.hours}</span>
@@ -37,19 +38,19 @@ export function WorkingHours() {
           <ul className="mt-6 space-y-4 text-sm">
             <li className="flex items-center gap-3 text-slate-600">
               <Phone size={16} className="shrink-0 text-teal-700" />
-              {contact.phonePlaceholder}
+              {content.phone}
             </li>
             <li className="flex items-center gap-3 text-slate-600">
               <MessageCircle size={16} className="shrink-0 text-teal-700" />
-              {contact.whatsappPlaceholder}
+              {content.whatsapp}
             </li>
             <li className="flex items-center gap-3 text-slate-600">
               <Mail size={16} className="shrink-0 text-teal-700" />
-              {contact.emailPlaceholder}
+              {content.email}
             </li>
             <li className="flex items-start gap-3 text-slate-600">
               <MapPin size={16} className="mt-0.5 shrink-0 text-teal-700" />
-              {contact.addressPlaceholder}
+              {content.address}
             </li>
           </ul>
 

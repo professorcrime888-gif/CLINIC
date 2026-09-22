@@ -1,7 +1,9 @@
 import { GraduationCap } from 'lucide-react'
 import { doctor } from '@/data/clinic'
+import { useSiteContent } from '@/lib/site-content'
 
 export function DoctorIntro() {
+  const content = useSiteContent()
   return (
     <section id="about" className="mx-auto max-w-7xl px-5 py-16">
       <div className="grid gap-10 rounded-3xl border border-slate-100 bg-white p-8 shadow-sm lg:grid-cols-[1fr_1.4fr] lg:p-12">
@@ -20,7 +22,7 @@ export function DoctorIntro() {
 
         <div>
           <h3 className="text-lg font-bold text-slate-900">نبذة عن الطبيب</h3>
-          <p className="mt-3 leading-relaxed text-slate-600">{doctor.bio}</p>
+          <p className="mt-3 leading-relaxed text-slate-600">{content.doctorBio}</p>
           <p className="mt-4 leading-relaxed text-slate-600">
             نحرص على تقديم رعاية طبية دقيقة ومتابعة مستمرة لحالة كل مريضة، مع إعطاء وقت
             كافٍ للاستماع والشرح، بما يضمن راحتكِ وثقتكِ في كل خطوة من رحلتك الصحية.
