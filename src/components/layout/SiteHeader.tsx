@@ -20,7 +20,7 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5">
         <Link to="/" className="flex items-center gap-3 shrink-0">
           <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-700 text-lg font-bold text-white">
-            عأ
+            4D FC
           </span>
           <span className="flex flex-col leading-tight">
             <span className="text-sm font-bold text-slate-900 sm:text-base">
