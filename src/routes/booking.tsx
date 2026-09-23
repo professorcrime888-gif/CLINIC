@@ -24,7 +24,21 @@ function BookingPage() {
 
   function handleConfirm() {
     if (!selectedDate) return
-    setBookingNumber(generateBookingNumber(selectedDate))
+    const number = generateBookingNumber(selectedDate)
+    fetch('/.netlify/functions/save-booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bookingNumber: number,
+        date: selectedDate,
+        dateLabel,
+        time: selectedTime,
+        patient,
+      }),
+    }).catch(() => {
+      // Even if saving fails, don't block the patient from seeing their confirmation
+    })
+    setBookingNumber(number)
   }
 
   return (
