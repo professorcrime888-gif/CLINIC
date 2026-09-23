@@ -27,7 +27,12 @@ export default async (req: Request, _context: Context) => {
     const store = getStore('clinic-bookings')
     const existing = (await store.get('all', { type: 'json' })) as Array<unknown> | null
     const list = existing ?? []
-    list.unshift({ ...body, createdAt: new Date().toISOString() })
+    list.unshift({
+      ...body,
+      id: crypto.randomUUID(),
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    })
     await store.setJSON('all', list)
 
     const patientName = body?.patient?.fullName || 'مريضة جديدة'
