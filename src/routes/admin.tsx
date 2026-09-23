@@ -1,6 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { Lock, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import {
+  Lock,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Settings,
+  CalendarDays,
+  Phone,
+  MessageCircle,
+  Clock3,
+} from 'lucide-react'
 import { defaultSiteContent, type SiteContent } from '@/lib/site-content'
 
 export const Route = createFileRoute('/admin')({
@@ -91,7 +101,180 @@ function AdminPage() {
     )
   }
 
-  return <AdminForm password={password} />
+  return <AdminShell password={password} />
+}
+
+function AdminShell({ password }: { password: string }) {
+  const [tab, setTab] = useState<'content' | 'bookings'>('bookings')
+
+  return (
+    <div className="mx-auto max-w-3xl px-5 py-12">
+      <h1 className="text-2xl font-extrabold text-slate-900">لوحة التحكم</h1>
+
+      <div className="mt-6 flex gap-2 border-b border-slate-200">
+        <button
+          type="button"
+          onClick={() => setTab('bookings')}
+          className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-bold transition-colors ${
+            tab === 'bookings'
+              ? 'border-teal-700 text-teal-700'
+              : 'border-transparent text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          <CalendarDays size={16} />
+          طلبات الحجز
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab('content')}
+          className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-bold transition-colors ${
+            tab === 'content'
+              ? 'border-teal-700 text-teal-700'
+              : 'border-transparent text-slate-500 hover:text-slate-700'
+          }`}
+        >
+          <Settings size={16} />
+          بيانات الموقع
+        </button>
+      </div>
+
+      <div className="mt-8">
+        {tab === 'bookings' ? <BookingsPanel password={password} /> : <AdminForm password={password} />}
+      </div>
+    </div>
+  )
+}
+
+interface BookingEntry {
+  bookingNumber: string
+  date: string
+  dateLabel: string
+  time: string
+  createdAt: string
+  patient: {
+    fullName: string
+    mobile: string
+    whatsapp: string
+    dob: string
+    gender: string
+    nationalId: string
+    address: string
+    email: string
+    visitType: string
+    reason: string
+    notes: string
+    contactMethod: string
+  }
+}
+
+function BookingsPanel({ password }: { password: string }) {
+  const [bookings, setBookings] = useState<Array<BookingEntry>>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    fetch('/.netlify/functions/get-bookings', {
+      headers: { 'x-admin-password': password },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('failed')
+        return res.json()
+      })
+      .then((data: Array<BookingEntry>) => setBookings(data))
+      .catch(() => setError('تعذّر تحميل طلبات الحجز.'))
+      .finally(() => setLoading(false))
+  }, [password])
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[30vh] items-center justify-center text-slate-400">
+        <Loader2 size={22} className="animate-spin" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <p className="flex items-center gap-2 text-sm text-red-600">
+        <AlertCircle size={16} />
+        {error}
+      </p>
+    )
+  }
+
+  if (bookings.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-sm text-slate-500">
+        لا توجد طلبات حجز بعد. ستظهر هنا فور استلام أي طلب من موقعك.
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-slate-500">
+        {bookings.length} طلب حجز، الأحدث أولًا.
+      </p>
+      {bookings.map((b) => (
+        <div
+          key={b.bookingNumber + b.createdAt}
+          className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-extrabold tracking-wide text-teal-800">
+              {b.bookingNumber}
+            </span>
+            <span className="text-xs text-slate-400">
+              {new Date(b.createdAt).toLocaleString('ar-EG')}
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+              <CalendarDays size={15} className="shrink-0 text-teal-700" />
+              <span className="font-semibold">{b.dateLabel}</span>
+              <span className="flex items-center gap-1 text-slate-500">
+                <Clock3 size={13} />
+                {b.time}
+              </span>
+            </div>
+            <div className="text-sm font-bold text-slate-800">{b.patient.fullName}</div>
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <Phone size={14} className="shrink-0 text-teal-700" />
+              {b.patient.mobile}
+            </div>
+            {b.patient.whatsapp && (
+              <div className="flex items-center gap-2 text-sm text-slate-600">
+                <MessageCircle size={14} className="shrink-0 text-teal-700" />
+                {b.patient.whatsapp}
+              </div>
+            )}
+          </div>
+
+          <dl className="mt-4 grid gap-x-6 gap-y-1.5 text-xs text-slate-500 sm:grid-cols-2">
+            <div>
+              <span className="font-semibold text-slate-600">نوع الزيارة: </span>
+              {b.patient.visitType === 'first' ? 'زيارة أولى' : 'متابعة'}
+            </div>
+            <div>
+              <span className="font-semibold text-slate-600">وسيلة التواصل: </span>
+              {b.patient.contactMethod || '—'}
+            </div>
+            <div className="sm:col-span-2">
+              <span className="font-semibold text-slate-600">سبب الزيارة: </span>
+              {b.patient.reason || '—'}
+            </div>
+            {b.patient.notes && (
+              <div className="sm:col-span-2">
+                <span className="font-semibold text-slate-600">ملاحظات: </span>
+                {b.patient.notes}
+              </div>
+            )}
+          </dl>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 function AdminForm({ password }: { password: string }) {
@@ -160,9 +343,8 @@ function AdminForm({ password }: { password: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-12">
-      <h1 className="text-2xl font-extrabold text-slate-900">لوحة التحكم</h1>
-      <p className="mt-1 text-sm text-slate-500">
+    <div>
+      <p className="text-sm text-slate-500">
         عدّل بيانات التواصل، وسائل التواصل الاجتماعي، نبذة الطبيب، ومواعيد العمل.
       </p>
 
