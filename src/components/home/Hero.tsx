@@ -1,14 +1,16 @@
 import { Link } from '@tanstack/react-router'
 import { CalendarCheck, Clock3, MessageCircle } from 'lucide-react'
 import { doctor } from '@/data/clinic'
+import { useSiteContent } from '@/lib/site-content'
 
 export function Hero() {
+  const content = useSiteContent()
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-teal-50 via-white to-white">
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-14 lg:grid-cols-2 lg:py-20">
         <div className="order-2 lg:order-1">
           <span className="inline-flex items-center rounded-full bg-teal-100 px-4 py-1.5 text-sm font-semibold text-teal-800">
-            رعاية صحية متخصصة لكل امرأة
+            {content.heroBadge}
           </span>
 
           <h1 className="mt-5 text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
@@ -19,8 +21,7 @@ export function Hero() {
           </p>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-600">
-            نوفر متابعة طبية دقيقة ومريحة لصحة المرأة، من الفحوصات الدورية إلى متابعة
-            الحمل والولادة، في بيئة تحترم خصوصيتكِ وتضع راحتكِ أولاً.
+            {content.heroDescription}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">

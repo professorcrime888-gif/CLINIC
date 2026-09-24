@@ -7,7 +7,8 @@ import {
   Stethoscope,
   type LucideIcon,
 } from 'lucide-react'
-import { services } from '@/data/clinic'
+import { services as defaultServices } from '@/data/clinic'
+import { useSiteContent } from '@/lib/site-content'
 
 const icons: Record<string, LucideIcon> = {
   'heart-pulse': HeartPulse,
@@ -19,6 +20,17 @@ const icons: Record<string, LucideIcon> = {
 }
 
 export function Services() {
+  const content = useSiteContent()
+  // Icons stay fixed per service id; only title/description are editable.
+  const merged = defaultServices.map((base) => {
+    const override = content.services.find((s) => s.id === base.id)
+    return {
+      ...base,
+      title: override?.title || base.title,
+      description: override?.description || base.description,
+    }
+  })
+
   return (
     <section id="services" className="mx-auto max-w-7xl px-5 py-16">
       <div className="mx-auto max-w-2xl text-center">
@@ -31,7 +43,7 @@ export function Services() {
       </div>
 
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((service) => {
+        {merged.map((service) => {
           const Icon = icons[service.icon]
           return (
             <div

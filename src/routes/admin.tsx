@@ -13,7 +13,7 @@ import {
   Check,
   Trash2,
 } from 'lucide-react'
-import { defaultSiteContent, type SiteContent } from '@/lib/site-content'
+import { defaultSiteContent, applyThemeColor, type SiteContent } from '@/lib/site-content'
 
 export const Route = createFileRoute('/admin')({
   component: AdminPage,
@@ -434,6 +434,53 @@ function AdminForm({ password }: { password: string }) {
         </section>
 
         <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-sm font-bold text-slate-900">لون الموقع</h2>
+          <div className="flex items-center gap-4">
+            <input
+              type="color"
+              value={form.primaryColor}
+              onChange={(e) => {
+                setForm({ ...form, primaryColor: e.target.value })
+                applyThemeColor(e.target.value)
+              }}
+              className="h-12 w-16 cursor-pointer rounded-lg border border-slate-200"
+            />
+            <input
+              type="text"
+              value={form.primaryColor}
+              onChange={(e) => {
+                setForm({ ...form, primaryColor: e.target.value })
+                if (/^#[0-9a-fA-F]{6}$/.test(e.target.value)) applyThemeColor(e.target.value)
+              }}
+              className="w-32 rounded-xl border border-slate-200 px-3 py-2 text-sm font-mono outline-none focus:border-teal-700"
+            />
+            <p className="text-xs text-slate-400">
+              اضغطي على المربع أو اكتبي كود اللون. التغيير هيظهر فورًا كمعاينة، واحفظي عشان يثبت على الموقع.
+            </p>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-sm font-bold text-slate-900">العنوان الرئيسي للموقع</h2>
+          <div className="space-y-4">
+            <Field
+              label="الشارة العلوية"
+              value={form.heroBadge}
+              onChange={(v) => setForm({ ...form, heroBadge: v })}
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-semibold text-slate-700">الفقرة التعريفية</span>
+              <textarea
+                value={form.heroDescription}
+                onChange={(e) => setForm({ ...form, heroDescription: e.target.value })}
+                rows={3}
+                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-teal-700"
+              />
+            </label>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-sm font-bold text-slate-900">وسائل التواصل الاجتماعي</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
@@ -485,6 +532,38 @@ function AdminForm({ password }: { password: string }) {
                   placeholder="مثال: 5:00 م - 9:00 م، أو أجازة"
                   className="w-full rounded-xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-teal-700"
                 />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-sm font-bold text-slate-900">الخدمات</h2>
+          <div className="space-y-5">
+            {form.services.map((service, i) => (
+              <div key={service.id} className="rounded-xl border border-slate-100 p-4">
+                <Field
+                  label="عنوان الخدمة"
+                  value={service.title}
+                  onChange={(v) => {
+                    const next = [...form.services]
+                    next[i] = { ...next[i], title: v }
+                    setForm({ ...form, services: next })
+                  }}
+                />
+                <label className="mt-3 block text-sm">
+                  <span className="mb-1.5 block font-semibold text-slate-700">الوصف</span>
+                  <textarea
+                    value={service.description}
+                    onChange={(e) => {
+                      const next = [...form.services]
+                      next[i] = { ...next[i], description: e.target.value }
+                      setForm({ ...form, services: next })
+                    }}
+                    rows={2}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2 text-sm outline-none focus:border-teal-700"
+                  />
+                </label>
               </div>
             ))}
           </div>

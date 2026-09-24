@@ -20,11 +20,11 @@ export default async (req: Request, _context: Context) => {
   }
 
   try {
-    const { id, status } = await req.json()
+    const { id } = await req.json()
     const store = getStore('clinic-bookings')
     const existing = (await store.get('all', { type: 'json' })) as Array<any> | null
     const list = existing ?? []
-    const updated = list.map((b) => (b.id === id ? { ...b, status } : b))
+    const updated = list.filter((b) => b.id !== id)
     await store.setJSON('all', updated)
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,

@@ -3,10 +3,10 @@
 // managed later from the admin dashboard (see PLAN.md) rather than hardcoded here.
 
 export const doctor = {
-  name: 'د. إسلام عادل عمار',
-  nameEn: 'DR Eslam Adel Ammar',
-  specialty: '4D Fetal Care',
-  specialtyEn: '4D Fetal Care',
+  name: 'د. عادل عمار آدم',
+  nameEn: 'Dr. Adel Ammar Adam',
+  specialty: 'أخصائي أمراض النساء والولادة',
+  specialtyEn: 'Obstetrics & Gynecology (OB-GYN)',
   // Bio, qualifications, affiliations are intentionally left as editable placeholders —
   // they are not invented here and should be filled in by the clinic via the admin panel.
   bio: 'تُضاف نبذة تعريفية عن الطبيب من خلال لوحة التحكم.',
